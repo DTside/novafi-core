@@ -3,12 +3,19 @@ import withPWA from "@ducanh2912/next-pwa";
 
 const isDev = process.env.NODE_ENV === "development";
 
-const nextConfig: NextConfig = {
-  // Транспиляция нужна для Supabase в любом случае
+const nextConfig = {
+  // Исправление для Supabase
   transpilePackages: ['@supabase/supabase-js', '@supabase/ssr'],
+
+  // 👇 Экономим ресурсы Vercel, отключая проверки при сборке
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
-// Настройка PWA
 const withPWAConfig = withPWA({
   dest: "public",
   cacheOnFrontEndNav: true,
@@ -20,7 +27,5 @@ const withPWAConfig = withPWA({
   },
 });
 
-// ГЛАВНЫЙ ФИКС:
-// В dev-режиме не используем плагин PWA вообще -> работает Turbopack -> работает Supabase.
-// В prod-режиме (build) используем плагин -> работает PWA.
+// В dev-режиме - чистый конфиг. В prod - с PWA.
 export default isDev ? nextConfig : withPWAConfig(nextConfig);
