@@ -182,42 +182,43 @@ export default function Home() {
       {/* --- GRID LAYOUT --- */}
       <div className="grid grid-cols-1 md:grid-cols-4 grid-rows-4 gap-4 md:h-[800px]">
         
-        {/* 1. INTERACTIVE CHART CARD (REDUX) */}
+        {/* 1. INTERACTIVE CHART CARD (Mobile Fixed) */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="col-span-1 md:col-span-3 row-span-2 glass-panel rounded-3xl relative overflow-hidden flex flex-col border-t border-white/10"
         >
-           {/* График на фоне */}
+           {/* График */}
            <div className="absolute inset-0 z-0">
-   {/* Добавили key. Теперь при смене монеты график точно перезагрузится */}
-   <RealTradingView key={selectedCoin.symbol} symbol={selectedCoin.symbol} />
-</div>
+              <RealTradingView key={selectedCoin.symbol} symbol={selectedCoin.symbol} />
+           </div>
            
-           {/* Градиент для читаемости шапки */}
-           <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-[#050505] via-[#050505]/80 to-transparent z-10 pointer-events-none" />
+           {/* Градиент (Увеличили h-48 для мобилок, чтобы текст читался) */}
+           <div className="absolute top-0 left-0 w-full h-56 md:h-40 bg-gradient-to-b from-[#050505] via-[#050505]/90 to-transparent z-10 pointer-events-none" />
 
-{/* --- НОВАЯ СТРУКТУРИРОВАННАЯ ШАПКА (Flexbox) --- */}
-           <div className="relative z-20 flex flex-col md:flex-row justify-between items-start md:items-center p-6 gap-6">
+           {/* --- ШАПКА --- */}
+           <div className="relative z-20 flex flex-col md:flex-row justify-between items-start md:items-center p-4 md:p-6 gap-4 md:gap-6">
              
-             {/* Левая часть: Общий баланс */}
-             {/* 👇 ДОБАВИЛ ml-12 md:ml-16, чтобы не перекрывать левое меню графика */}
-             <div className="ml-12 md:ml-16 mt-2"> 
-                <h3 className="text-sm text-gray-400 font-medium flex items-center gap-2 mb-2 bg-black/30 w-fit px-3 py-1 rounded-full backdrop-blur-md border border-white/5">
-                  <Wallet size={16} className="text-primary"/> Total Liquidity
+             {/* Левая часть: Баланс */}
+             {/* ml-10 на мобилках, чтобы не перекрывать тулбар графика слева */}
+             <div className="ml-10 md:ml-16 mt-1 md:mt-2"> 
+                <h3 className="text-xs md:text-sm text-gray-400 font-medium flex items-center gap-2 mb-1 md:mb-2 bg-black/40 w-fit px-3 py-1 rounded-full backdrop-blur-md border border-white/5">
+                  <Wallet size={14} className="text-primary"/> Total Liquidity
                 </h3>
-                <p className="text-4xl md:text-5xl font-bold tracking-tighter text-white drop-shadow-2xl">
+                {/* Уменьшили шрифт для мобилок (text-3xl) */}
+                <p className="text-3xl md:text-5xl font-bold tracking-tighter text-white drop-shadow-2xl">
                   {formatMoney(totalBalance)}
                 </p>
              </div>
 
-             {/* Правая часть: Выбор монеты и цена (Остается без изменений) */}
-             <div className="flex flex-col items-end gap-3" ref={coinSelectorRef}>
-               {/* ... код селектора ... */}
+             {/* Правая часть: Селектор */}
+             {/* ДОБАВИЛ: w-full (чтобы растянуть блок) и -mt-2 (чуть поднять) */}
+             <div className="flex flex-col items-end gap-2 w-full md:w-auto -mt-2 md:mt-0" ref={coinSelectorRef}>
+               
                <div className="relative z-30">
                  <button 
                    onClick={() => setIsCoinSelectorOpen(!isCoinSelectorOpen)}
-                   className="flex items-center gap-2 bg-white/5 backdrop-blur-xl border border-white/10 pl-3 pr-2 py-1.5 rounded-xl hover:bg-white/10 transition-all"
+                   className="flex items-center gap-2 bg-white/5 backdrop-blur-xl border border-white/10 pl-3 pr-2 py-1.5 rounded-xl hover:bg-white/10 transition-all shadow-lg"
                  >
                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${selectedCoin.bg} ${selectedCoin.color}`}>
                       {selectedCoin.symbol[0]}
@@ -253,7 +254,7 @@ export default function Home() {
                  </AnimatePresence>
                </div>
                
-               <div className="flex items-center gap-2 text-sm font-medium bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/5">
+               <div className="flex items-center gap-2 text-xs md:text-sm font-medium bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/5 shadow-lg">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
