@@ -3,12 +3,11 @@ import withPWA from "@ducanh2912/next-pwa";
 
 const isDev = process.env.NODE_ENV === "development";
 
-// 👇 Убрали типизацию ": NextConfig", чтобы не ругался линтер
 const nextConfig = {
-  // 1. Транспиляция пакетов
+  // 1. Транспиляция (Оставляем)
   transpilePackages: ['@supabase/supabase-js', '@supabase/ssr'],
 
-  // 2. Отключаем проверки типов и линтера при сборке (чтобы билд не падал по мелочам)
+  // 2. Игнорируем ошибки при сборке (для экономии ресурсов Vercel)
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -16,14 +15,17 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // 3. ГЛАВНЫЙ ФИКС: Принудительная подмена путей для Webpack
+  // 3. ГЛАВНЫЙ ФИКС: Правильная обработка MJS файлов
   webpack: (config: any) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      // Заставляем использовать CJS-версию вместо ESM, которая ломает сборку
-      '@supabase/supabase-js': '@supabase/supabase-js/dist/main/index.js',
-      '@supabase/ssr': '@supabase/ssr/dist/main/index.js',
-    };
+    // Убираем alias, так как он запрещен авторами Supabase
+    
+    // Добавляем правило: "Не пытайся быть слишком умным с .mjs, просто грузи их"
+    config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: "javascript/auto",
+    });
+
     return config;
   },
 };
